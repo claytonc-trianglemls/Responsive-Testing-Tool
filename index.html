@@ -1,69 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Responsive Tester – Preconfigured</title>
-  <meta name="description" content="Open any site in sized windows for responsive checks.">
+  <meta charset="utf-8">
+  <title>Responsive Tester (No Iframes) — Minimal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Open any site in sized windows for quick responsive checks. GitHub Pages friendly.">
   <style>
+    * { box-sizing: border-box; }
     body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; line-height: 1.45; }
     h1 { margin: 0 0 8px 0; }
+    .muted { color: #555; font-size: 14px; margin: 0 0 16px 0; }
     .card { border: 1px solid #e5e5e5; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
-    button { padding: 10px 12px; border-radius: 10px; border: 1px solid #ccc; background: #f7f7f7; cursor: pointer; font-weight: 600; }
+    button { padding: 10px 12px; border-radius: 10px; border: 1px solid #ccc; background: #f7f7f7; cursor: pointer; font-weight: 600; width: 100%; }
     button:hover { background: #eee; }
-    input[type="url"] { padding: 10px; border-radius: 8px; border: 1px solid #ccc; width: 100%; }
+    input[type="url"], input[type="number"] { padding: 10px; border-radius: 8px; border: 1px solid #ccc; width: 100%; }
     label { font-size: 12px; color: #444; display:block; margin-bottom: 6px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; align-items: end; }
     .fine { font-size: 12px; color: #666; }
+    noscript { color: #b00020; font-weight: 600; }
   </style>
 </head>
 <body>
-  <h1>Responsive Tester</h1>
-  <p>Paste a URL, then click a size to open the page in a new window. Presets include phones (portrait/landscape), tablets, laptops, and desktops.</p>
+  <h1>Responsive Tester (No Iframes)</h1>
+  <p class="muted">Paste a URL, then click a size to open the page in a new window at that resolution. No iframes. Works on GitHub Pages.</p>
+  <noscript>This page requires JavaScript enabled.</noscript>
 
   <div class="card">
     <label for="url">Target URL</label>
-    <input id="url" type="url" placeholder="https://example.com" />
-    <div class="fine">Tip: Include <code>https://</code></div>
+    <input id="url" type="url" placeholder="https://example.com">
+    <div class="fine">Include <code>https://</code>. If nothing opens when clicking, allow pop-ups for this site.</div>
   </div>
 
   <div class="card">
-    <h3>Device Presets</h3>
-    <div class="grid" id="presets"></div>
+    <h3>Phones — Portrait & Landscape</h3>
+    <div class="grid">
+      <button onclick="openSized(375,667)">iPhone SE (375×667)</button>
+      <button onclick="openSized(667,375)">iPhone SE (667×375)</button>
+
+      <button onclick="openSized(393,852)">iPhone 14 Pro (393×852)</button>
+      <button onclick="openSized(852,393)">iPhone 14 Pro (852×393)</button>
+
+      <button onclick="openSized(412,915)">Pixel 7 (412×915)</button>
+      <button onclick="openSized(915,412)">Pixel 7 (915×412)</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Tablets — Portrait & Landscape</h3>
+    <div class="grid">
+      <button onclick="openSized(768,1024)">iPad Mini (768×1024)</button>
+      <button onclick="openSized(1024,768)">iPad Mini (1024×768)</button>
+
+      <button onclick="openSized(1024,1366)">iPad Pro (1024×1366)</button>
+      <button onclick="openSized(1366,1024)">iPad Pro (1366×1024)</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Laptops & Desktops</h3>
+    <div class="grid">
+      <button onclick="openSized(1280,800)">Laptop 13″ (1280×800)</button>
+      <button onclick="openSized(1440,900)">Laptop 14″ (1440×900)</button>
+      <button onclick="openSized(1920,1080)">Desktop FHD (1920×1080)</button>
+      <button onclick="openSized(2560,1440)">Desktop WQHD (2560×1440)</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Custom Size</h3>
+    <div class="row">
+      <div>
+        <label for="w">Width (px)</label>
+        <input id="w" type="number" value="375" min="240" step="1">
+      </div>
+      <div>
+        <label for="h">Height (px)</label>
+        <input id="h" type="number" value="667" min="240" step="1">
+      </div>
+      <div>
+        <button onclick="openCustom()">Open Custom Window</button>
+      </div>
+    </div>
   </div>
 
   <script>
-  const presets = [
-    {label: "iPhone SE Portrait (375×667)", w: 375, h: 667},
-  {label: "iPhone SE Landscape (667×375)", w: 667, h: 375},
-  {label: "iPhone 14 Pro Portrait (393×852)", w: 393, h: 852},
-  {label: "iPhone 14 Pro Landscape (852×393)", w: 852, h: 393},
-  {label: "Pixel 7 Portrait (412×915)", w: 412, h: 915},
-  {label: "Pixel 7 Landscape (915×412)", w: 915, h: 412},
-  {label: "iPad Mini Portrait (768×1024)", w: 768, h: 1024},
-  {label: "iPad Mini Landscape (1024×768)", w: 1024, h: 768},
-  {label: "iPad Pro Portrait (1024×1366)", w: 1024, h: 1366},
-  {label: "iPad Pro Landscape (1366×1024)", w: 1366, h: 1024},
-  {label: "Small Laptop 13" (WXGA+) (1280×800)", w: 1280, h: 800},
-  {label: "Laptop 14" (HD+) (1440×900)", w: 1440, h: 900},
-  {label: "Desktop FHD (1920×1080)", w: 1920, h: 1080},
-  {label: "Desktop WQHD (2560×1440)", w: 2560, h: 1440}
-  ];
-  const presetsEl = document.getElementById('presets');
-  presets.forEach(p => {
-    const btn = document.createElement('button');
-    btn.textContent = p.label;
-    btn.addEventListener('click', () => openSized(p.w, p.h));
-    presetsEl.appendChild(btn);
-  });
-  function openSized(w, h) {
-    const url = document.getElementById('url').value.trim();
-    if (!url || !/^https?:\/\//i.test(url)) { alert('Please enter a valid URL including https://'); return; }
-    const features = `width=${w},height=${h},left=50,top=50,menubar=0,toolbar=0,location=1,status=0,resizable=1,scrollbars=1`;
-    const win = window.open('about:blank', `rt_${w}x${h}`, features);
-    if (!win) { alert('Pop-up blocked. Please allow pop-ups for this page.'); return; }
-    win.location.href = url;
-  }
+    // Minimal JS, inline handlers only
+    function getTargetUrl() {
+      var url = document.getElementById('url').value.trim();
+      if (!/^https?:\/\//i.test(url)) {
+        alert('Please enter a valid URL, including https:// or http://');
+        return null;
+      }
+      return url;
+    }
+    function openSized(w, h) {
+      var target = getTargetUrl();
+      if (!target) return;
+      var features = "width=" + w + ",height=" + h + ",left=50,top=50,menubar=0,toolbar=0,location=1,status=0,resizable=1,scrollbars=1";
+      var name = "rt_" + w + "x" + h;
+      var win = window.open("about:blank", name, features);
+      if (!win) { alert("Pop-up blocked. Allow pop-ups for this page and try again."); return; }
+      try { win.location.href = target; } catch (e) { window.open(target, name, features); }
+    }
+    function openCustom() {
+      var w = parseInt(document.getElementById('w').value, 10);
+      var h = parseInt(document.getElementById('h').value, 10);
+      if (!w || !h || w < 240 || h < 240) { alert("Please provide sensible width/height (>=240)."); return; }
+      openSized(w, h);
+    }
   </script>
 </body>
 </html>
